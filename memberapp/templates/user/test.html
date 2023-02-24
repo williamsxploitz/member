@@ -1,0 +1,60 @@
+{% extends "user/home_layout.html"%}
+  
+{% block content %}
+{%for x in data%}
+{{x[1].party_name}} <br>
+{{x[0].user_fullname}}<br>
+{{x[0].user_phone}}<br>
+{%endfor%}
+<br>{{data}}
+<div class="content" style="background-color: white;padding:3em">
+   
+<p id="img"></p>
+ <form id="myform" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" id="csrf_token" value="{{csrf_token()}}">
+  <label>Username</label> <input type="text" class="form-control" name="username">
+   <label>Email</label><input type="email" class="form-control" name="email">
+   <label>Picture</label> <input type="file" class="form-control" name="pix">
+   <label>Password</label> <input type="password" class="form-control" name="password">
+   Favourite Food <hr>
+   <label>Rice</label> <input type="radio" name="meal" value="rice">
+   <label>Beans</label> <input type="radio" name="meal" value="beans">
+    <button type="button" class="btn btn-success btn-lg">Submit</button>
+ </form>
+  
+ </div>
+ 
+{% endblock %}
+
+{% block customjs%}
+<script>
+    $(document).ready(function(){
+        $('button').click(function(){
+            //METHOD 1 var data2send = $('#myform').serialize()
+            //method 2 : formData
+            
+            var dform = document.getElementById('myform') //$('#myform')[0] 
+            var data2send = new FormData(dform)
+
+            $.ajax({
+                url:"/demo",
+                type:"POST",
+                data:data2send,
+                success:function(msg){
+                    var src = "/static/uploads/"+msg
+                    var image = '<img src="'+src+'" width="150">' 
+                    $('#img').html(image)
+                   //alert(image)
+                },
+                error:function(err){
+                    console.log(err)
+                },
+                cache:false,
+                processData:false,
+                contentType:false,
+            })
+
+        })
+    })
+</script>
+{%endblock%}
